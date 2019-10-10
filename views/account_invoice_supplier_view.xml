@@ -14,7 +14,7 @@
             </xpath>
             <xpath expr="//page[@name='other_info']" position='before'>
 	    	    <page string="Costs">
-                    <field context="{'type': type, 'journal_id': journal_id}" name="invoice_line_ids">
+                    <field context="{'type': type, 'journal_id': journal_id}" name="invoice_price_line_ids">
                         <tree string="Costs lines" editable="bottom">
                             <field name="product_id"/>
                             <field name="price_unit"/>
