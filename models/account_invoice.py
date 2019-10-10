@@ -14,12 +14,10 @@ class AccountInvoice(models.Model):
     invoice_price_line_ids = fields.One2many('account.invoice.line', 'invoice_id', string='Invoice Lines',
                                        readonly=True, states={'draft': [('readonly', False)]}, copy=True)
 
-
 class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 
     price_old = fields.Float(string='Old Price', required=True, digits=dp.get_precision('Product Price'))
-
 
     def action_show_wizard(self):
         self.ensure_one()

@@ -10,15 +10,39 @@ _logger = logging.getLogger(__name__)
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    cost_price = fields.Float('Cost', digits=dp.get_precision('Product Price'))
+    cost_price = fields.Float('Previous Cost', digits=dp.get_precision('Product Price'))
+    list_price = fields.Float('Sales Price', compute='_compute_list_price', store=False, digits=dp.get_precision('Product Price'))
+    lst_price = fields.Float('Public Price', compute='_compute_list_price', store=False, digits=dp.get_precision('Product Price'))
+    standard_price = fields.Float('Cost', compute='_compute_list_price', store=False, digits=dp.get_precision('Product Price'))
 
+    @api.multi
+    @api.depends('product_id')
+    def _compute_list_price(self):
+        for record in self:
+            record.list_price = record.product_id.list_price
+            record.list_price = record.product_id.lst_price
+            record.standard_price = record.product_id.standard_price
+
+        # list_price = fields.Float(
+        #     'Sales Price', default=1.0,
+        #     digits=dp.get_precision('Product Price'),
+        #     help="Price at which the product is sold to customers.")
+        # # lst_price: catalog price for template, but including extra for variants
+        # lst_price = fields.Float(
+        #     'Public Price', related='list_price', readonly=False,
+        #     digits=dp.get_precision('Product Price'))
+        # standard_price = fields.Float(
+        #     'Cost', compute='_compute_standard_price',
+        #     inverse='_set_standard_price', search='_search_standard_price',
+        #     digits=dp.get_precision('Product Price'), groups="base.group_user",
+        #     help="Cost used for stock valuation in standard price and as a first price to set in average/FIFO.")
+        #
+        # self.product_id.name
 
 class Picking(models.Model):
     _inherit = "stock.picking"
 
-    move_ids_cost_prices = fields.One2many('stock.move', 'picking_id', string="Stock moves cost prices",
-                                           domain=['|', ('package_level_id', '=', False),
-                                                   ('picking_type_entire_packs', '=', False)])
+    move_ids_cost_prices = fields.One2many('stock.move', 'picking_id', string="Stock moves cost prices")
 
     @api.multi
     def button_validate(self):
