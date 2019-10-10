@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<odoo>
+
+        <record id="select_sale_price_form" model="ir.ui.view">
+            <field name="name">select.sale.price.wizard</field>
+            <field name="model">select.sale.price</field>
+            <field name="arch" type="xml">
+                <form string="Select Sale Price">
+                    <group>
+                        <field name="product_id"/>
+                    </group>
+                    <footer>
+                        <button name="action_lost_reason_apply" string="Submit" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="select_sale_price_wizard" model="ir.actions.act_window">
+            <field name="name">Select Sale Price</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">select.sale.price</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="select_sale_price_form"/>
+            <field name="target">new</field>
+        </record>
+
+</odoo>
