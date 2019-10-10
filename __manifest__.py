@@ -15,6 +15,7 @@
     'data': [
         'wizards/wizards_select_sale_price.xml',
         'views/account_invoice_supplier_view.xml',
+        'views/stock_picking_view.xml',
     ],
     'installable': True,
 }
