@@ -28,7 +28,6 @@ class SelectSalePrice(models.TransientModel):
         for line in self.picking_id.move_line_ids:
             data.append((0, False, self.get_dict_line(line)))
         self.price_line_ids = data
-        self.action_select_sale_price()
 
     def get_dict_line(self, line):
         sale_price_line = {'product_id': line.product_id,
