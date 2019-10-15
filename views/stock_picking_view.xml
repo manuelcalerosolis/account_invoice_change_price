@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<!--
     <record id="view_picking_form_inherit" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='extra']" position='before'>
-                <page string="Costs">
+                <page string="Costs" >
                     <field name="id" invisible="1"/>
                     <field name="move_ids_cost_prices"
                            attrs="{'readonly': [('state', '!=', 'done')]}"
@@ -15,14 +16,55 @@
                         <tree string="Costs lines" editable="bottom">
                             <field name="state" invisible="1"/>
                             <field name="product_id"/>
+                            <field name="previous_purchase_date"/>
+                            <field name="previous_purchase_price"/>
+                            <field name="previous_cost_price"/>
+                            <field name="purchase_price"/>
                             <field name="cost_price"/>
-                            <field name="standard_price"/>
                             <field name="list_price"/>
                         </tree>
                     </field>
                 </page>
 
             </xpath>
+        </field>
+    </record>
+
+    <record id='view_picking_price_form_inherit' model='ir.ui.view'>
+        <field name="name">view.picking.price.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <form string="Picking Prices">
+                <field name="id" invisible="1"/>
+                <field name="move_ids_cost_prices"
+                       context="{'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_picking_form'}">
+                    <tree string="Costs lines" editable="bottom">
+                        <field name="state" invisible="1"/>
+                        <field name="product_id"/>
+                        <field name="previous_purchase_date"/>
+                        <field name="previous_purchase_price"/>
+                        <field name="previous_cost_price"/>
+                        <field name="purchase_price"/>
+                        <field name="cost_price"/>
+                        <field name="list_price"/>
+                    </tree>
+                </field>
+            </form>
+        </field>
+    </record>
+-->
+
+    <record id="view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" name="%(account_invoice_change_price.select_sale_price_wizard)d"
+                        icon="fa-money" type="action" string="Prices"
+                        context="{'default_picking_id': id}">
+                </button>
+            </div>
         </field>
     </record>
 
