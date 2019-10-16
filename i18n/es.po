@@ -107,7 +107,7 @@ msgstr "Antiguo precio"
 #: code:addons/account_invoice_change_price/models/stock_move.py:43
 #, python-format
 msgid "Picking Prices"
-msgstr "Selección de precios"
+msgstr "Precio de albarán"
 
 #. module: account_invoice_change_price
 #: model:ir.model.fields,field_description:account_invoice_change_price.field_select_sale_price_line__previous_cost_price
@@ -158,12 +158,12 @@ msgstr "Selección de precio de venta"
 #. module: account_invoice_change_price
 #: model:ir.model,name:account_invoice_change_price.model_select_sale_price_line
 msgid "Select Sale Price Line Wizard"
-msgstr "Wizard de selección de línea de precio de venta"
+msgstr "Assistente para la selección de línea de precio de venta"
 
 #. module: account_invoice_change_price
 #: model:ir.model,name:account_invoice_change_price.model_select_sale_price
 msgid "Select Sale Price Wizard"
-msgstr "Wizard de selección de precio de venta"
+msgstr "Assistente para la selección de precio de venta"
 
 #. module: account_invoice_change_price
 #: model:ir.model.fields,field_description:account_invoice_change_price.field_select_sale_price_line__selected
@@ -188,7 +188,7 @@ msgstr "Albarán"
 #. module: account_invoice_change_price
 #: model:ir.model.fields,field_description:account_invoice_change_price.field_stock_picking__move_ids_cost_prices
 msgid "Stock moves cost prices"
-msgstr "Movimiento de acciones de precio de costos"
+msgstr "Linea de selección de precios"
 
 #. module: account_invoice_change_price
 #: model_terms:ir.ui.view,arch_db:account_invoice_change_price.select_sale_price_form
@@ -199,7 +199,7 @@ msgstr "Enviar"
 #: code:addons/account_invoice_change_price/models/stock_move.py:38
 #, python-format
 msgid "The selected picking does not have validated yet. Please validate the picking and retry "
-msgstr "La selección recogida aún no se ha validado. Por favor, valide la selección y vuelva a intentar"
+msgstr "La albarán seleccionado aún no se ha validado. Por favor, valide el albarán y vuelva a intentar"
 
 #. module: account_invoice_change_price
 #: model:ir.model,name:account_invoice_change_price.model_stock_picking
