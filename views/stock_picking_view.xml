@@ -60,10 +60,7 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
-                <button class="oe_stat_button" name="%(account_invoice_change_price.select_sale_price_wizard)d"
-                        icon="fa-money" type="action" string="Prices"
-                        context="{'default_picking_id': id}">
-                </button>
+                <button class="oe_stat_button" name="action_open_picking_prices" icon="fa-money" type="object" string="Prices"/>
             </div>
         </field>
     </record>

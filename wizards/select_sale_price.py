@@ -32,6 +32,7 @@ class SelectSalePrice(models.TransientModel):
     def get_dict_line(self, line):
         sale_price_line = {'product_id': line.product_id,
                            'previous_cost_price': line.move_id.previous_cost_price,
+                           'current_cost_price': line.move_id.current_cost_price,
                            'purchase_price': line.move_id.purchase_line_id.price_unit,
                            'cost_price': line.product_id.standard_price,
                            'standard_price': line.product_id.standard_price}
@@ -64,14 +65,15 @@ class SelectSalePriceLine(models.TransientModel):
     _name = 'select.sale.price.line'
     _description = 'Select Sale Price Line Wizard'
 
+    selected = fields.Boolean(string='Selected', default=True, help='Indicate this line is coming to change')
     product_id = fields.Many2one('product.product', string='Product')
     previous_purchase_date = fields.Datetime('Previous Purchase Date', required=False)
     previous_purchase_price = fields.Float('Previous Purchase Price', digits=dp.get_precision('Product Price'))
     previous_cost_price = fields.Float('Previous Cost', digits=dp.get_precision('Product Price'))
+    current_cost_price = fields.Float('Current Cost', digits=dp.get_precision('Product Price'))
     purchase_price = fields.Float('Purchase Price', digits=dp.get_precision('Product Price'))
     cost_price = fields.Float('Cost Price', digits=dp.get_precision('Product Price'))
     standard_price = fields.Float('Standard Price', digits=dp.get_precision('Product Price'))
-    selected = fields.Boolean(string='Selected', default=True, help='Indicate this line is coming to change')
 
     @api.onchange('standard_price')
     def _onchange_standard_price(self):
