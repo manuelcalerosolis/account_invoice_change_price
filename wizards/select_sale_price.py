@@ -12,7 +12,7 @@ class SelectSalePrice(models.TransientModel):
     _description = 'Select Sale Price Wizard'
 
     picking_id = fields.Many2one('stock.picking', 'Stock Picking')
-    price_line_ids = fields.Many2many('select.sale.price.line')
+    price_line_ids = fields.One2many('select.sale.price.line', 'sale_id')
 
     @api.model
     def default_get(self, default_fields):
@@ -52,12 +52,8 @@ class SelectSalePrice(models.TransientModel):
     @api.multi
     def action_select_sale_price(self):
         for line in self.price_line_ids:
-            _logger.info("*"*80)
-            _logger.info(line)
-            _logger.info(line.selected)
-            _logger.info(line.product_id)
-            _logger.info(line.standard_price)
-            _logger.info("*"*80)
+            if line.selected:
+                line.product_id.standard_price = line.standard_price
         return
 
 
@@ -65,8 +61,9 @@ class SelectSalePriceLine(models.TransientModel):
     _name = 'select.sale.price.line'
     _description = 'Select Sale Price Line Wizard'
 
+    sale_id = fields.Many2one('select.sale.price')
     selected = fields.Boolean(string='Selected', default=True, help='Indicate this line is coming to change')
-    product_id = fields.Many2one('product.product', string='Product')
+    product_id = fields.Many2one('product.product', string='Product', required=True)
     previous_purchase_date = fields.Datetime('Previous Purchase Date', required=False)
     previous_purchase_price = fields.Float('Previous Purchase Price', digits=dp.get_precision('Product Price'))
     previous_cost_price = fields.Float('Previous Cost', digits=dp.get_precision('Product Price'))
@@ -78,3 +75,7 @@ class SelectSalePriceLine(models.TransientModel):
     @api.onchange('standard_price')
     def _onchange_standard_price(self):
         self.selected = True
+
+    # @api.model
+    # def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
+    #     return
