@@ -51,10 +51,8 @@ class SelectSalePrice(models.TransientModel):
 
     @api.multi
     def action_select_sale_price(self):
-        for line in self.price_line_ids:
-            if line.selected:
-                line.product_id.standard_price = line.standard_price
-        return
+        for line in self.price_line_ids.filtered(lambda r: r.selected):
+            line.product_id.standard_price = line.standard_price
 
 
 class SelectSalePriceLine(models.TransientModel):
@@ -76,6 +74,3 @@ class SelectSalePriceLine(models.TransientModel):
     def _onchange_standard_price(self):
         self.selected = True
 
-    # @api.model
-    # def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
-    #     return

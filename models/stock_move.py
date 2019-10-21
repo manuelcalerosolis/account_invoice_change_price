@@ -35,19 +35,17 @@ class Picking(models.Model):
     def action_open_picking_prices(self):
         self.ensure_one()
         if self.state != 'done':
-            raise UserError(_('The selected picking does not have validated yet. Please validate the picking and retry '))
+            raise UserError(_('The selected picking does not have validated yet. Please validate the picking.'))
             return
 
         view = self.env.ref('account_invoice_change_price.select_sale_price_form')
 
-        action = {'name': _('Picking Prices'),
-                  'view_type': 'form',
-                  'view_mode': 'form',
-                  'target': 'new',
-                  'res_model': 'select.sale.price',
-                  'view_id': view.id,
-                  'views': [(view.id, 'form')],
-                  'type': 'ir.actions.act_window',
-                  'context': {'default_picking_id': self.id}}
-
-        return action
+        return {'name': _('Picking Prices'),
+                'view_type': 'form',
+                'view_mode': 'form',
+                'target': 'new',
+                'res_model': 'select.sale.price',
+                'view_id': view.id,
+                'views': [(view.id, 'form')],
+                'type': 'ir.actions.act_window',
+                'context': {'default_picking_id': self.id}}
