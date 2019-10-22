@@ -26,10 +26,12 @@ class Picking(models.Model):
         for line in self.move_lines:
             line.previous_cost_price = line.product_id.standard_price
 
-        super(Picking, self).button_validate()
+        result = super(Picking, self).button_validate()
 
         for line in self.move_lines:
             line.current_cost_price = line.product_id.standard_price
+
+        return result
 
     @api.multi
     def action_open_picking_prices(self):
