@@ -1,6 +1,5 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import fields, models, api
-from odoo.addons import decimal_precision as dp
 
 import logging
 
@@ -49,7 +48,6 @@ class SelectSalePrice(models.TransientModel):
             [['product_id', '=', product_id.id], ['picking_id', '<>', self.picking_id.id]], limit=1,
             order='date desc')
 
-    @api.multi
     def action_select_sale_price(self):
         for line in self.price_line_ids.filtered(lambda r: r.selected):
             line.product_id.standard_price = line.standard_price
@@ -63,12 +61,12 @@ class SelectSalePriceLine(models.TransientModel):
     selected = fields.Boolean(string='Selected', default=True, help='Indicate this line is coming to change')
     product_id = fields.Many2one('product.product', string='Product', required=True)
     previous_purchase_date = fields.Datetime('Previous Purchase Date', required=False)
-    previous_purchase_price = fields.Float('Previous Purchase Price', digits=dp.get_precision('Product Price'))
-    previous_cost_price = fields.Float('Previous Cost', digits=dp.get_precision('Product Price'))
-    current_cost_price = fields.Float('Current Cost', digits=dp.get_precision('Product Price'))
-    purchase_price = fields.Float('Purchase Price', digits=dp.get_precision('Product Price'))
-    cost_price = fields.Float('Cost Price', digits=dp.get_precision('Product Price'))
-    standard_price = fields.Float('Standard Price', digits=dp.get_precision('Product Price'))
+    previous_purchase_price = fields.Float('Previous Purchase Price', digits='Account')
+    previous_cost_price = fields.Float('Previous Cost', digits='Account')
+    current_cost_price = fields.Float('Current Cost', digits='Account')
+    purchase_price = fields.Float('Purchase Price', digits='Account')
+    cost_price = fields.Float('Cost Price', digits='Account')
+    standard_price = fields.Float('Standard Price', digits='Account')
 
     @api.onchange('standard_price')
     def _onchange_standard_price(self):

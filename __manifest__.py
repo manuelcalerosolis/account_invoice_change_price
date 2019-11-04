@@ -10,7 +10,10 @@
     'license': 'AGPL-3',
     'summary': 'Select Cost Price',
     'depends': [
+        'base',
         'account',
+        'sale',
+        'stock_account',
     ],
     'data': [
         'wizards/wizards_select_sale_price.xml',

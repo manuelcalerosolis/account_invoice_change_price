@@ -1,7 +1,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import api, fields, models, _
-from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError
 
 import logging
@@ -12,8 +11,8 @@ _logger = logging.getLogger(__name__)
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    previous_cost_price = fields.Float('Previous Cost', digits=dp.get_precision('Product Price'))
-    current_cost_price = fields.Float('Current Cost', digits=dp.get_precision('Product Price'))
+    previous_cost_price = fields.Float('Previous Cost', digits='Account')
+    current_cost_price = fields.Float('Current Cost', digits='Account')
 
 
 class Picking(models.Model):
@@ -21,7 +20,6 @@ class Picking(models.Model):
 
     move_ids_cost_prices = fields.One2many('stock.move', 'picking_id', string="Stock moves cost prices")
 
-    @api.multi
     def button_validate(self):
         for line in self.move_lines:
             line.previous_cost_price = line.product_id.standard_price
@@ -33,7 +31,6 @@ class Picking(models.Model):
 
         return result
 
-    @api.multi
     def action_open_picking_prices(self):
         self.ensure_one()
         if self.state != 'done':
