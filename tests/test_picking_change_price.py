@@ -25,20 +25,7 @@ class TestPickingChangePrice(common.TransactionCase):
             'name': 'Product A',
             'type': 'product',
             'default_code': 'prda',
-            'categ_id': self.categ_average.id
-        })
-
-        self.product_b = self.env['product.product'].create({
-            'name': 'Product B',
-            'type': 'product',
-            'default_code': 'prdb',
-            'categ_id': self.categ_average.id
-        })
-
-        self.product_c = self.env['product.product'].create({
-            'name': 'Product C',
-            'type': 'product',
-            'default_code': 'prdc',
+            'standard_price': 10.0,
             'categ_id': self.categ_average.id
         })
 
@@ -55,42 +42,63 @@ class TestPickingChangePrice(common.TransactionCase):
 
         self.currency = self.env['res.currency'].search([('name', '=', 'EUR')])
 
-        self.purchase_order_1 = self.env['purchase.order'].create({
+    def test_previous_and_current_price_after_two_purchase_order(self):
+        purchase_order_1 = self.env['purchase.order'].create({
             'partner_id': self.partner.id,
             'currency_id': self.currency.id,
             'order_line': [
                 (0, 0, {
                     'name': self.product_a.name,
                     'product_id': self.product_a.id,
-                    'product_qty': 1.0,
+                    'product_qty': 10.0,
                     'product_uom': self.product_a.uom_po_id.id,
-                    'price_unit': 100.0,
-                    'date_planned': datetime.today(),
-                }),
-                (0, 0, {
-                    'name': self.product_b.name,
-                    'product_id': self.product_b.id,
-                    'product_qty': 1.0,
-                    'product_uom': self.product_b.uom_po_id.id,
-                    'price_unit': 200.0,
-                    'date_planned': datetime.today(),
-                }),
-                (0, 0, {
-                    'name': self.product_c.name,
-                    'product_id': self.product_c.id,
-                    'product_qty': 1.0,
-                    'product_uom': self.product_c.uom_po_id.id,
-                    'price_unit': 300.0,
+                    'price_unit': 20.0,
                     'date_planned': datetime.today(),
                 }),
             ],
         })
 
-    def test_product_created(self):
-        """ This method test that product A, B and C was created.
-        """
-        self.assertEqual(self.product_a.name, 'Product A')
-        self.assertEqual(self.product_b.name, 'Product B')
-        self.assertEqual(self.product_c.name, 'Product C')
+        purchase_order_1.button_confirm()
+        purchase_order_1.action_view_picking()
 
-        self.assertEqual(self.purchase_order_1.partner_id, self.partner)
+        picking_1 = purchase_order_1.picking_ids[0]
+
+        move_line_1 = picking_1.move_lines[0]
+        move_line_1.quantity_done = 10
+
+        picking_1.button_validate()
+
+        self.assertEqual(move_line_1.previous_cost_price, 10.0)
+        self.assertEqual(move_line_1.price_unit, 20.0)
+        self.assertEqual(move_line_1.current_cost_price, 20.0)
+        self.assertEqual(self.product_a.standard_price, 20.0)
+
+        purchase_order_2 = self.env['purchase.order'].create({
+            'partner_id': self.partner.id,
+            'currency_id': self.currency.id,
+            'order_line': [
+                (0, 0, {
+                    'name': self.product_a.name,
+                    'product_id': self.product_a.id,
+                    'product_qty': 10.0,
+                    'product_uom': self.product_a.uom_po_id.id,
+                    'price_unit': 30.0,
+                    'date_planned': datetime.today(),
+                }),
+            ],
+        })
+
+        purchase_order_2.button_confirm()
+        purchase_order_2.action_view_picking()
+
+        picking_2 = purchase_order_2.picking_ids[0]
+
+        move_line_2 = picking_2.move_lines[0]
+        move_line_2.quantity_done = 10
+
+        picking_2.button_validate()
+
+        self.assertEqual(move_line_2.previous_cost_price, 20.0)
+        self.assertEqual(move_line_2.price_unit, 30.0)
+        self.assertEqual(move_line_2.current_cost_price, 25.0)
+        self.assertEqual(self.product_a.standard_price, 25.0)
