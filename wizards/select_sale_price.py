@@ -35,7 +35,7 @@ class SelectSalePrice(models.TransientModel):
                            'current_cost_price': line.move_id.current_cost_price,
                            'purchase_price': line.move_id.purchase_line_id.price_unit,
                            'cost_price': line.product_id.standard_price,
-                           'standard_price': line.product_id.standard_price,
+                           'list_price': line.product_id.list_price,
                            'eur_price': 0,
                            'usd_price': 0}
 
@@ -62,7 +62,7 @@ class SelectSalePrice(models.TransientModel):
     def action_select_sale_price(self):
         # logging.info("+"*80)
         for line in self.price_line_ids.filtered(lambda r: r.selected):
-            line.product_id.standard_price = line.standard_price
+            line.product_id.list_price = line.list_price
 
             for price_list_item in line.product_id.pricelist_item_ids:
                 # logging.info(price_list_item.pricelist_id.name)
@@ -92,7 +92,7 @@ class SelectSalePriceLine(models.TransientModel):
     current_cost_price = fields.Float('Current Cost', digits=dp.get_precision('Product Price'))
     purchase_price = fields.Float('Purchase Price', digits=dp.get_precision('Product Price'))
     cost_price = fields.Float('Cost Price', digits=dp.get_precision('Product Price'))
-    standard_price = fields.Float('Standard Price', digits=dp.get_precision('Product Price'))
+    list_price = fields.Float('List Price', digits=dp.get_precision('Product Price'))
 
     eur_price = fields.Float('EUR Price', digits=dp.get_precision('Product Price'))
     usd_price = fields.Float('USD Price', digits=dp.get_precision('Product Price'))
