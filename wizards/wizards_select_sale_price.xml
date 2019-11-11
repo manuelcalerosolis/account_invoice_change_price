@@ -19,6 +19,8 @@
                             <field name="purchase_price" readonly="1"/>
                             <field name="current_cost_price" readonly="1"/>
                             <field name="standard_price"/>
+                            <field name="eur_price"/>
+                            <field name="usd_price"/>
                         </tree>
                     </field>
                     <footer>

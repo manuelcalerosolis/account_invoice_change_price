@@ -35,12 +35,21 @@ class SelectSalePrice(models.TransientModel):
                            'current_cost_price': line.move_id.current_cost_price,
                            'purchase_price': line.move_id.purchase_line_id.price_unit,
                            'cost_price': line.product_id.standard_price,
-                           'standard_price': line.product_id.standard_price}
+                           'standard_price': line.product_id.standard_price,
+                           'eur_price': 0,
+                           'usd_price': 0}
 
         search = self.get_search_last_purchase(line.product_id)
         if search:
             sale_price_line.update({'previous_purchase_date': search.create_date})
             sale_price_line.update({'previous_purchase_price': search.purchase_line_id.price_unit})
+
+        for price_list_item in line.product_id.pricelist_item_ids:
+            if price_list_item.pricelist_id.name == 'Tarifa pública':
+                sale_price_line.update({'eur_price': price_list_item.fixed_price})
+
+            if price_list_item.pricelist_id.name == 'Tarifa privada':
+                sale_price_line.update({'usd_price': price_list_item.fixed_price})
 
         return sale_price_line
 
@@ -51,8 +60,23 @@ class SelectSalePrice(models.TransientModel):
 
     @api.multi
     def action_select_sale_price(self):
+        # logging.info("+"*80)
         for line in self.price_line_ids.filtered(lambda r: r.selected):
             line.product_id.standard_price = line.standard_price
+
+            for price_list_item in line.product_id.pricelist_item_ids:
+                # logging.info(price_list_item.pricelist_id.name)
+                if price_list_item.pricelist_id.name == 'Tarifa pública':
+                    # logging.info("eur_price")
+                    # logging.info(line.eur_price)
+                    # logging.info(price_list_item.pricelist_id.id)
+                    price_list_item.fixed_price = line.eur_price
+
+                if price_list_item.pricelist_id.name == 'Tarifa privada':
+                    # logging.info("usd_price")
+                    # logging.info(line.usd_price)
+                    # logging.info(price_list_item.pricelist_id.id)
+                    price_list_item.fixed_price = line.usd_price
 
 
 class SelectSalePriceLine(models.TransientModel):
@@ -70,7 +94,10 @@ class SelectSalePriceLine(models.TransientModel):
     cost_price = fields.Float('Cost Price', digits=dp.get_precision('Product Price'))
     standard_price = fields.Float('Standard Price', digits=dp.get_precision('Product Price'))
 
-    @api.onchange('standard_price')
+    eur_price = fields.Float('EUR Price', digits=dp.get_precision('Product Price'))
+    usd_price = fields.Float('USD Price', digits=dp.get_precision('Product Price'))
+
+    @api.onchange('standard_price', 'eur_price', 'usd_price')
     def _onchange_standard_price(self):
         self.selected = True
 
