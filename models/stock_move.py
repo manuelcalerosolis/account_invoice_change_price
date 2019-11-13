@@ -43,7 +43,6 @@ class Picking(models.Model):
         return {'name': _('Picking Prices'),
                 'view_type': 'form',
                 'view_mode': 'form',
-                'target': 'new',
                 'res_model': 'select.sale.price',
                 'view_id': view.id,
                 'views': [(view.id, 'form')],

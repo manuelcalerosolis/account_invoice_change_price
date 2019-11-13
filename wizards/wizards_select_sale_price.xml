@@ -23,10 +23,10 @@
                             <field name="usd_price"/>
                         </tree>
                     </field>
-                    <footer>
-                        <button name="action_select_sale_price" string="Submit" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel"/>
-                    </footer>
+<!--                    <footer>-->
+<!--                        <button name="action_select_sale_price" string="Submit" type="object" class="btn-primary"/>-->
+<!--                        <button string="Cancel" class="btn-secondary" special="cancel"/>-->
+<!--                    </footer>-->
                 </form>
             </field>
         </record>
