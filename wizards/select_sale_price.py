@@ -23,6 +23,7 @@ class SelectSalePrice(models.TransientModel):
 
     @api.onchange('picking_id')
     def _onchange_picking_id(self):
+        logging.info("ya he creado las lineas")
         data = []
         self.price_line_ids = [(6, 0, [])]
         for line in self.picking_id.move_line_ids:
@@ -32,7 +33,6 @@ class SelectSalePrice(models.TransientModel):
     def get_dict_line(self, line):
         sale_price_line = {'product_id': line.product_id,
                            'previous_cost_price': line.move_id.previous_cost_price,
-                           'current_cost_price': line.move_id.current_cost_price,
                            'purchase_price': line.move_id.purchase_line_id.price_unit,
                            'cost_price': line.product_id.standard_price,
                            'list_price': line.product_id.list_price,
@@ -89,15 +89,19 @@ class SelectSalePriceLine(models.TransientModel):
     previous_purchase_date = fields.Datetime('Previous Purchase Date', required=False)
     previous_purchase_price = fields.Float('Previous Purchase Price', digits=dp.get_precision('Product Price'))
     previous_cost_price = fields.Float('Previous Cost', digits=dp.get_precision('Product Price'))
-    current_cost_price = fields.Float('Current Cost', digits=dp.get_precision('Product Price'))
+    current_cost_price = fields.Float('Current Cost', compute='_compute_current_cost_price')
     purchase_price = fields.Float('Purchase Price', digits=dp.get_precision('Product Price'))
     cost_price = fields.Float('Cost Price', digits=dp.get_precision('Product Price'))
     list_price = fields.Float('List Price', digits=dp.get_precision('Product Price'))
-
     eur_price = fields.Float('EUR Price', digits=dp.get_precision('Product Price'))
     usd_price = fields.Float('USD Price', digits=dp.get_precision('Product Price'))
 
     @api.onchange('standard_price', 'eur_price', 'usd_price')
     def _onchange_standard_price(self):
         self.selected = True
+
+    @api.multi
+    def _compute_current_cost_price(self):
+        for line in self:
+            self.current_cost_price = self.product_id.standard_price
 
